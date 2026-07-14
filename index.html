@@ -1,0 +1,1179 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXUS TempMail</title>
+    <style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --primary: #6c5ce7;
+    --primary-dark: #5a4bd1;
+    --secondary: #00b894;
+    --danger: #e17055;
+    --warning: #fdcb6e;
+    --dark: #1a1a2e;
+    --darker: #16213e;
+    --light: #dfe6e9;
+    --glass: rgba(255, 255, 255, 0.1);
+    --shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+}
+
+body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: linear-gradient(135deg, var(--darker), var(--dark));
+    color: var(--light);
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+/* Banner */
+.banner {
+    color: #6c5ce7;
+    font-size: 12px;
+    line-height: 1.2;
+    text-align: center;
+    font-weight: bold;
+    text-shadow: 0 0 20px rgba(108, 92, 231, 0.3);
+    margin-bottom: 5px;
+}
+
+.subtitle {
+    text-align: center;
+    color: var(--light);
+    opacity: 0.7;
+    font-size: 14px;
+    margin-bottom: 20px;
+}
+
+/* Current Email */
+.current-email {
+    margin-bottom: 20px;
+}
+
+.email-card {
+    background: var(--glass);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    box-shadow: var(--shadow);
+}
+
+.email-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.label {
+    color: #b2bec3;
+    font-size: 13px;
+}
+
+.email-value {
+    color: #74b9ff;
+    font-weight: bold;
+    font-size: 14px;
+    word-break: break-all;
+}
+
+.btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+}
+
+.btn-sm {
+    padding: 5px 12px;
+    font-size: 12px;
+}
+
+.btn-danger {
+    background: var(--danger);
+    color: white;
+}
+
+.btn-danger:hover {
+    background: #d63031;
+    transform: scale(1.05);
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--primary-dark);
+    transform: scale(1.05);
+}
+
+.btn-success {
+    background: var(--secondary);
+    color: white;
+}
+
+.btn-success:hover {
+    background: #00a381;
+    transform: scale(1.05);
+}
+
+.btn-warning {
+    background: var(--warning);
+    color: var(--dark);
+}
+
+.btn-warning:hover {
+    background: #fdcb6e;
+    transform: scale(1.05);
+}
+
+/* Menu */
+.menu {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    margin-bottom: 25px;
+}
+
+.menu-btn {
+    background: var(--glass);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: var(--light);
+    padding: 14px 18px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    box-shadow: var(--shadow);
+}
+
+.menu-btn:hover {
+    background: rgba(108, 92, 231, 0.3);
+    border-color: var(--primary);
+    transform: translateY(-2px);
+    box-shadow: 0 12px 40px rgba(108, 92, 231, 0.2);
+}
+
+.menu-btn i {
+    font-size: 18px;
+}
+
+/* Mailbox Content */
+.mailbox-content {
+    background: var(--glass);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 20px;
+    min-height: 300px;
+    box-shadow: var(--shadow);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 50px 20px;
+}
+
+.empty-icon {
+    font-size: 60px;
+    color: var(--primary);
+    opacity: 0.5;
+    margin-bottom: 15px;
+}
+
+.empty-state p {
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.empty-state small {
+    opacity: 0.6;
+}
+
+/* Mail List */
+.mailbox-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mail-count {
+    background: var(--primary);
+    padding: 2px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.mail-item {
+    padding: 12px 15px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-left: 3px solid transparent;
+}
+
+.mail-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(5px);
+}
+
+.mail-item.unread {
+    border-left-color: var(--warning);
+}
+
+.mail-item .mail-sender {
+    font-weight: bold;
+    color: #74b9ff;
+}
+
+.mail-item .mail-subject {
+    color: var(--light);
+    margin: 4px 0;
+}
+
+.mail-item .mail-date {
+    font-size: 12px;
+    opacity: 0.6;
+}
+
+.mail-item .mail-badge {
+    background: var(--warning);
+    color: var(--dark);
+    padding: 1px 10px;
+    border-radius: 12px;
+    font-size: 10px;
+    font-weight: bold;
+}
+
+/* Modal */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+}
+
+.modal-content {
+    background: var(--darker);
+    border-radius: 16px;
+    max-width: 700px;
+    width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+    padding: 30px;
+    position: relative;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+
+.modal-close {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    font-size: 28px;
+    cursor: pointer;
+    color: var(--light);
+    opacity: 0.6;
+    transition: 0.3s;
+}
+
+.modal-close:hover {
+    opacity: 1;
+}
+
+/* Loading */
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(3px);
+    z-index: 999;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(255, 255, 255, 0.1);
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Toast */
+.toast {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background: var(--dark);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 15px 25px;
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+    z-index: 2000;
+    max-width: 400px;
+    animation: slideUp 0.3s ease;
+}
+
+.toast.success {
+    border-left: 4px solid var(--secondary);
+}
+
+.toast.error {
+    border-left: 4px solid var(--danger);
+}
+
+.toast.info {
+    border-left: 4px solid var(--primary);
+}
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(30px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+    width: 6px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary);
+    border-radius: 3px;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    .banner {
+        font-size: 8px;
+    }
+    
+    .menu {
+        grid-template-columns: 1fr 1fr;
+    }
+    
+    .email-card {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+    
+    .modal-content {
+        padding: 20px;
+        margin: 10px;
+    }
+    
+    .mail-item {
+        padding: 10px;
+    }
+}
+
+/* Saved emails list */
+.saved-list {
+    list-style: none;
+    padding: 0;
+}
+
+.saved-list li {
+    padding: 12px 15px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.saved-list .email-text {
+    color: #74b9ff;
+    font-weight: 500;
+}
+
+.saved-list .email-actions {
+    display: flex;
+    gap: 8px;
+}
+
+/* Monitor controls */
+.monitor-controls {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-bottom: 15px;
+}
+
+.monitor-controls input {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 8px 14px;
+    border-radius: 8px;
+    color: white;
+    width: 100px;
+}
+
+.monitor-controls input:focus {
+    outline: none;
+    border-color: var(--primary);
+}
+
+.monitor-status {
+    padding: 8px 16px;
+    border-radius: 20px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.monitor-status.active {
+    background: var(--secondary);
+    color: white;
+}
+
+.monitor-status.inactive {
+    background: var(--danger);
+    color: white;
+}
+</style>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="logo">
+                <pre class="banner">
+███╗   ██╗███████╗██╗  ██╗██╗   ██╗███████╗
+████╗  ██║██╔════╝╚██╗██╔╝██║   ██║██╔════╝
+██╔██╗ ██║█████╗   ╚███╔╝ ██║   ██║███████╗
+██║╚██╗██║██╔══╝   ██╔██╗ ██║   ██║╚════██║
+██║ ╚████║███████╗██╔╝ ██╗╚██████╔╝███████║
+╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚══════╝
+                </pre>
+                <p class="subtitle">https://www.facebook.com/riodz01</p>
+            </div>
+        </header>
+
+        <!-- Current Email Display -->
+        <div class="current-email" id="currentEmailDisplay" style="display: none;">
+            <div class="email-card">
+                <div class="email-info">
+                    <span class="label"><i class="fas fa-envelope"></i> Email hiện tại:</span>
+                    <span class="email-value" id="currentEmail"></span>
+                </div>
+                <div class="email-info">
+                    <span class="label"><i class="fas fa-key"></i> Mật khẩu:</span>
+                    <span class="email-value" id="currentPassword"></span>
+                </div>
+                <button class="btn btn-sm btn-danger" onclick="clearCurrentEmail()">
+                    <i class="fas fa-times"></i> Xóa
+                </button>
+            </div>
+        </div>
+
+        <!-- Menu -->
+        <div class="menu">
+            <button class="menu-btn" onclick="createEmail()">
+                <i class="fas fa-plus-circle"></i> Tạo email mới
+            </button>
+            <button class="menu-btn" onclick="showSavedEmails()">
+                <i class="fas fa-history"></i> Email đã lưu
+            </button>
+            <button class="menu-btn" onclick="checkMailbox()">
+                <i class="fas fa-inbox"></i> Kiểm tra hộp thư
+            </button>
+            <button class="menu-btn" onclick="showMonitor()">
+                <i class="fas fa-sync-alt"></i> Theo dõi liên tục
+            </button>
+        </div>
+
+        <!-- Mailbox Content -->
+        <div id="mailboxContent" class="mailbox-content">
+            <div class="empty-state" id="emptyState">
+                <i class="fas fa-envelope-open-text empty-icon"></i>
+                <p>Hộp thư đang trống</p>
+                <small>Hãy tạo email mới hoặc kiểm tra hộp thư</small>
+            </div>
+            <div id="mailList" style="display: none;"></div>
+        </div>
+
+        <!-- Loading -->
+        <div id="loading" class="loading-overlay" style="display: none;">
+            <div class="spinner"></div>
+            <p>Đang xử lý...</p>
+        </div>
+
+        <!-- Modal -->
+        <div id="modal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="modal-close" onclick="closeModal()">&times;</span>
+                <div id="modalBody"></div>
+            </div>
+        </div>
+
+        <!-- Toast Notification -->
+        <div id="toast" class="toast" style="display: none;"></div>
+    </div>
+
+    <script>
+// ─────────────────────────────────────────────
+//  CẤU HÌNH — Gọi thẳng API từ trình duyệt (không còn backend Flask)
+// ─────────────────────────────────────────────
+const API_BASE = "https://cheapluxurymail.xyz";
+const SAVE_KEY = "nexus_saved_mails";
+const CURRENT_KEY = "nexus_current_mail";
+
+let currentEmail = null;
+let currentPassword = null;
+let isMonitoring = false;
+let monitorTimer = null;
+let monitorSeenIds = new Set();
+let cachedDomains = [];
+
+// ─────────────────────────────────────────────
+//  LƯU TRỮ CỤC BỘ (thay cho session/file phía server)
+// ─────────────────────────────────────────────
+
+function loadSavedMails() {
+    try {
+        return JSON.parse(localStorage.getItem(SAVE_KEY) || '{}');
+    } catch (e) {
+        return {};
+    }
+}
+
+function persistSavedMails(saved) {
+    localStorage.setItem(SAVE_KEY, JSON.stringify(saved));
+}
+
+function rememberMail(email, password) {
+    const saved = loadSavedMails();
+    saved[email] = {
+        password,
+        created_at: saved[email]?.created_at || new Date().toISOString(),
+        last_used: new Date().toISOString(),
+    };
+    persistSavedMails(saved);
+}
+
+// ─────────────────────────────────────────────
+//  GỌI API TEMPMAIL TRỰC TIẾP
+// ─────────────────────────────────────────────
+
+async function apiGet(endpoint) {
+    try {
+        const res = await fetch(`${API_BASE}${endpoint}`, {
+            method: 'GET',
+            headers: { 'Accept': 'application/json' }
+        });
+        return res;
+    } catch (e) {
+        return null;
+    }
+}
+
+async function apiPost(endpoint, body) {
+    try {
+        const res = await fetch(`${API_BASE}${endpoint}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify(body)
+        });
+        return res;
+    } catch (e) {
+        return null;
+    }
+}
+
+async function loadDomains() {
+    if (cachedDomains.length) return cachedDomains;
+    const res = await apiGet('/domains');
+    if (res && res.ok) {
+        try {
+            const data = await res.json();
+            cachedDomains = data?.data?.domains || [];
+        } catch (e) { /* ignore */ }
+    }
+    if (!cachedDomains.length) {
+        cachedDomains = ["cheapluxury.eu", "tempmail.com", "example.com"];
+    }
+    return cachedDomains;
+}
+
+function randomString(len, chars) {
+    let out = '';
+    for (let i = 0; i < len; i++) out += chars[Math.floor(Math.random() * chars.length)];
+    return out;
+}
+
+async function apiCreateEmail() {
+    const res = await apiGet('/random_email');
+    if (res && res.ok) {
+        try {
+            const data = await res.json();
+            if (data.response_code === 200) {
+                const email = data?.data?.email;
+                const password = data?.data?.password;
+                if (email && password) return { email, password };
+            }
+        } catch (e) { /* fall through to fallback */ }
+    }
+
+    // Fallback: tự sinh địa chỉ rồi đăng ký
+    const domains = await loadDomains();
+    if (domains.length) {
+        const local = randomString(10, 'abcdefghijklmnopqrstuvwxyz0123456789');
+        const domain = domains[Math.floor(Math.random() * domains.length)];
+        const email = `${local}@${domain}`;
+        const password = randomString(12, 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789');
+        const reg = await apiPost('/register', { email, password });
+        if (reg && reg.status === 201) {
+            return { email, password };
+        }
+    }
+    return null;
+}
+
+async function apiCheckMailbox(email, password) {
+    const res = await apiPost('/email/get', { email, password });
+    if (!res) return { success: false, error: 'Không thể kết nối đến server (có thể do CORS hoặc mạng)' };
+    if (res.status === 401) return { success: false, error: 'Email đã hết hạn hoặc sai mật khẩu' };
+    try {
+        const data = await res.json();
+        if (data.response_code === 200) {
+            return { success: true, emails: data?.data?.emails || [] };
+        }
+        return { success: false, error: data.message || 'Lỗi không xác định' };
+    } catch (e) {
+        return { success: false, error: 'Lỗi parse dữ liệu' };
+    }
+}
+
+async function apiReadMail(email, password, messageId) {
+    const res = await apiPost('/email/view', { email, password, message_id: messageId });
+    if (!res) return { success: false, error: 'Không thể kết nối đến server' };
+    try {
+        const data = await res.json();
+        if (data.response_code === 200) {
+            return { success: true, email: data?.data?.email || {} };
+        }
+        return { success: false, error: data.message || 'Lỗi không xác định' };
+    } catch (e) {
+        return { success: false, error: 'Lỗi parse dữ liệu' };
+    }
+}
+
+async function apiRecoverEmail(email) {
+    const saved = loadSavedMails();
+    if (!saved[email]) return { success: false, error: 'Email không tồn tại trong danh sách' };
+    const password = saved[email].password;
+    const res = await apiPost('/login', { email, password });
+    if (res && res.status === 200) {
+        try {
+            const data = await res.json();
+            if (data.response_code === 200) {
+                saved[email].last_used = new Date().toISOString();
+                persistSavedMails(saved);
+                return { success: true, password };
+            }
+        } catch (e) { /* fall through */ }
+    }
+    return { success: false, error: 'Email đã hết hạn' };
+}
+
+// ─────────────────────────────────────────────
+//  TOAST NOTIFICATIONS
+// ─────────────────────────────────────────────
+
+function showToast(message, type = 'info') {
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.className = `toast ${type}`;
+    toast.style.display = 'block';
+    clearTimeout(toast._timeout);
+    toast._timeout = setTimeout(() => {
+        toast.style.display = 'none';
+    }, 4000);
+}
+
+// ─────────────────────────────────────────────
+//  LOADING
+// ─────────────────────────────────────────────
+
+function showLoading(show = true) {
+    document.getElementById('loading').style.display = show ? 'flex' : 'none';
+}
+
+// ─────────────────────────────────────────────
+//  MODAL
+// ─────────────────────────────────────────────
+
+function openModal(html) {
+    document.getElementById('modalBody').innerHTML = html;
+    document.getElementById('modal').style.display = 'flex';
+}
+
+function closeModal() {
+    document.getElementById('modal').style.display = 'none';
+}
+
+// ─────────────────────────────────────────────
+//  CURRENT EMAIL
+// ─────────────────────────────────────────────
+
+function updateCurrentEmail(email, password) {
+    currentEmail = email;
+    currentPassword = password;
+    const display = document.getElementById('currentEmailDisplay');
+    if (email && password) {
+        display.style.display = 'block';
+        document.getElementById('currentEmail').textContent = email;
+        document.getElementById('currentPassword').textContent = password;
+        localStorage.setItem(CURRENT_KEY, JSON.stringify({ email, password }));
+    } else {
+        display.style.display = 'none';
+        localStorage.removeItem(CURRENT_KEY);
+    }
+}
+
+function clearCurrentEmail() {
+    updateCurrentEmail(null, null);
+    document.getElementById('mailList').style.display = 'none';
+    document.getElementById('emptyState').style.display = 'block';
+}
+
+// ─────────────────────────────────────────────
+//  CREATE EMAIL
+// ─────────────────────────────────────────────
+
+async function createEmail() {
+    showLoading(true);
+    try {
+        const result = await apiCreateEmail();
+        if (result) {
+            rememberMail(result.email, result.password);
+            updateCurrentEmail(result.email, result.password);
+            showToast(`Đã tạo email: ${result.email}`, 'success');
+            await checkMailbox();
+        } else {
+            showToast('Không thể tạo email', 'error');
+        }
+    } catch (error) {
+        showToast('Lỗi kết nối', 'error');
+    }
+    showLoading(false);
+}
+
+// ─────────────────────────────────────────────
+//  CHECK MAILBOX
+// ─────────────────────────────────────────────
+
+async function checkMailbox() {
+    const email = currentEmail || document.getElementById('currentEmail')?.textContent;
+    const password = currentPassword || document.getElementById('currentPassword')?.textContent;
+
+    if (!email || !password) {
+        showToast('Chưa có email nào được chọn', 'warning');
+        return;
+    }
+
+    showLoading(true);
+    try {
+        const data = await apiCheckMailbox(email, password);
+        if (data.success) {
+            renderMailList(data.emails, email);
+            showToast(`Có ${data.emails.length} thư`, 'info');
+        } else {
+            showToast(data.error || 'Không thể kiểm tra hộp thư', 'error');
+        }
+    } catch (error) {
+        showToast('Lỗi kết nối', 'error');
+    }
+    showLoading(false);
+}
+
+function renderMailList(emails, email) {
+    const container = document.getElementById('mailList');
+    const empty = document.getElementById('emptyState');
+
+    if (!emails || emails.length === 0) {
+        container.style.display = 'none';
+        empty.style.display = 'block';
+        return;
+    }
+
+    empty.style.display = 'none';
+    container.style.display = 'block';
+
+    let html = `
+        <div class="mailbox-header">
+            <h3><i class="fas fa-inbox"></i> Hộp thư: <span id="mailboxEmail">${email}</span></h3>
+            <span class="mail-count">${emails.length} thư</span>
+        </div>
+        <div class="mail-list">
+    `;
+
+    emails.forEach((mail, index) => {
+        const mid = mail.id || mail.message_id || index;
+        const sender = mail.from_addr || mail.from || '?';
+        const subject = mail.subject || '(không có tiêu đề)';
+        const date = mail.date || '';
+        const flags = mail.flags || [];
+        const isRead = flags.includes('seen');
+        const body = mail.body_text || mail.body || '';
+        const preview = body ? body.substring(0, 80).replace(/\n/g, ' ').trim() : '';
+
+        html += `
+            <div class="mail-item ${isRead ? 'read' : 'unread'}" onclick="readMail('${mid}')">
+                <div class="mail-sender">${sender}</div>
+                <div class="mail-subject">${subject}</div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:4px;">
+                    <span class="mail-date">${date}</span>
+                    ${!isRead ? '<span class="mail-badge">Mới</span>' : ''}
+                </div>
+                ${preview ? `<div style="font-size:13px; opacity:0.7; margin-top:4px;">${preview}...</div>` : ''}
+            </div>
+        `;
+    });
+
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+// ─────────────────────────────────────────────
+//  READ MAIL
+// ─────────────────────────────────────────────
+
+async function readMail(messageId) {
+    const email = currentEmail || document.getElementById('currentEmail')?.textContent;
+    const password = currentPassword || document.getElementById('currentPassword')?.textContent;
+
+    if (!email || !password) {
+        showToast('Chưa có email', 'warning');
+        return;
+    }
+
+    showLoading(true);
+    try {
+        const data = await apiReadMail(email, password, messageId);
+        if (data.success) {
+            const mail = data.email;
+            const body = mail.body_text || mail.body || '(trống)';
+            const cleanBody = body.replace(/<[^>]+>/g, '');
+
+            const html = `
+                <h3><i class="fas fa-envelope"></i> ${mail.subject || '(không có tiêu đề)'}</h3>
+                <hr style="border-color: rgba(255,255,255,0.1); margin: 15px 0;">
+                <p><strong>Từ:</strong> ${mail.from_addr || mail.from || '?'}</p>
+                <p><strong>Ngày:</strong> ${mail.date || '?'}</p>
+                <hr style="border-color: rgba(255,255,255,0.1); margin: 15px 0;">
+                <div style="white-space: pre-wrap; word-break: break-word;">${cleanBody}</div>
+                <hr style="border-color: rgba(255,255,255,0.1); margin: 15px 0;">
+                <button class="btn btn-primary" onclick="closeModal()">Đóng</button>
+            `;
+            openModal(html);
+        } else {
+            showToast(data.error || 'Không thể đọc thư', 'error');
+        }
+    } catch (error) {
+        showToast('Lỗi kết nối', 'error');
+    }
+    showLoading(false);
+}
+
+// ─────────────────────────────────────────────
+//  SAVED EMAILS
+// ─────────────────────────────────────────────
+
+async function showSavedEmails() {
+    showLoading(true);
+    try {
+        const saved = loadSavedMails();
+        const emails = Object.keys(saved);
+
+        let html = `<h3><i class="fas fa-history"></i> Email đã lưu</h3><hr style="border-color: rgba(255,255,255,0.1); margin: 15px 0;"><ul class="saved-list">`;
+
+        if (emails.length === 0) {
+            html += `<li style="text-align:center; opacity:0.6;">Chưa có email nào được lưu</li>`;
+        } else {
+            emails.forEach(email => {
+                html += `
+                    <li>
+                        <span class="email-text"><i class="fas fa-envelope"></i> ${email}</span>
+                        <span class="email-actions">
+                            <button class="btn btn-primary btn-sm" onclick="recoverEmail('${email}')">
+                                <i class="fas fa-undo"></i> Dùng lại
+                            </button>
+                            <button class="btn btn-danger btn-sm" onclick="deleteEmail('${email}')">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </span>
+                    </li>
+                `;
+            });
+        }
+        html += '</ul><button class="btn btn-primary" onclick="closeModal()">Đóng</button>';
+        openModal(html);
+    } catch (error) {
+        showToast('Lỗi kết nối', 'error');
+    }
+    showLoading(false);
+}
+
+async function recoverEmail(email) {
+    showLoading(true);
+    try {
+        const data = await apiRecoverEmail(email);
+        if (data.success) {
+            updateCurrentEmail(email, data.password);
+            showToast(`Khôi phục: ${email}`, 'success');
+            closeModal();
+            await checkMailbox();
+        } else {
+            showToast(data.error || 'Không thể khôi phục', 'error');
+        }
+    } catch (error) {
+        showToast('Lỗi kết nối', 'error');
+    }
+    showLoading(false);
+}
+
+async function deleteEmail(email) {
+    if (!confirm(`Xóa email ${email}?`)) return;
+
+    showLoading(true);
+    try {
+        const saved = loadSavedMails();
+        if (saved[email]) {
+            delete saved[email];
+            persistSavedMails(saved);
+            showToast(`Đã xóa ${email}`, 'success');
+            if (currentEmail === email) {
+                clearCurrentEmail();
+            }
+            await showSavedEmails();
+        } else {
+            showToast('Email không tồn tại', 'error');
+        }
+    } catch (error) {
+        showToast('Lỗi kết nối', 'error');
+    }
+    showLoading(false);
+}
+
+// ─────────────────────────────────────────────
+//  MONITOR (polling trực tiếp từ trình duyệt, thay cho WebSocket)
+// ─────────────────────────────────────────────
+
+function showMonitor() {
+    const email = currentEmail || document.getElementById('currentEmail')?.textContent;
+    const password = currentPassword || document.getElementById('currentPassword')?.textContent;
+
+    if (!email || !password) {
+        showToast('Chưa có email được chọn', 'warning');
+        return;
+    }
+
+    const html = `
+        <h3><i class="fas fa-sync-alt"></i> Theo dõi hộp thư</h3>
+        <p style="margin: 10px 0; opacity:0.7;">Đang theo dõi: <strong>${email}</strong></p>
+        <div class="monitor-controls">
+            <label>Khoảng cách (giây):</label>
+            <input type="number" id="monitorInterval" value="10" min="3" max="60">
+            <button class="btn btn-success" id="monitorStartBtn" onclick="startMonitor()">
+                <i class="fas fa-play"></i> Bắt đầu
+            </button>
+            <button class="btn btn-danger" id="monitorStopBtn" onclick="stopMonitor()" style="display:none;">
+                <i class="fas fa-stop"></i> Dừng
+            </button>
+            <span class="monitor-status inactive" id="monitorStatus">Đã dừng</span>
+        </div>
+        <div id="monitorLog" style="max-height:300px; overflow-y:auto; background:rgba(0,0,0,0.3); border-radius:8px; padding:10px; margin-top:10px; font-size:13px;">
+            <div style="opacity:0.5;">Chưa có thư mới...</div>
+        </div>
+        <hr style="border-color: rgba(255,255,255,0.1); margin: 15px 0;">
+        <button class="btn btn-primary" onclick="closeModal()">Đóng</button>
+    `;
+    openModal(html);
+}
+
+async function monitorTick(email, password) {
+    const data = await apiCheckMailbox(email, password);
+    const log = document.getElementById('monitorLog');
+    if (!log) return; // modal closed
+
+    if (!data.success) {
+        log.innerHTML += `<div style="color: #e17055; padding: 5px;">⚠ ${data.error}</div>`;
+        showToast(data.error, 'error');
+        stopMonitor();
+        return;
+    }
+
+    const newEmails = [];
+    (data.emails || []).forEach(mail => {
+        const mid = String(mail.id || mail.message_id || JSON.stringify(mail));
+        if (!monitorSeenIds.has(mid)) {
+            monitorSeenIds.add(mid);
+            newEmails.push(mail);
+        }
+    });
+
+    if (newEmails.length) {
+        const time = new Date().toLocaleTimeString();
+        newEmails.forEach(mail => {
+            const sender = mail.from_addr || mail.from || '?';
+            const subject = mail.subject || '(không có tiêu đề)';
+            log.innerHTML += `
+                <div style="padding: 8px; background: rgba(108,92,231,0.1); border-radius: 6px; margin: 5px 0; border-left: 3px solid #fdcb6e;">
+                    <strong style="color: #74b9ff;">[${time}]</strong>
+                    <span style="color: #fdcb6e;">●</span>
+                    <strong>${sender}</strong> — ${subject}
+                    <button class="btn btn-primary btn-sm" onclick="closeModal();readMail('${mail.id || mail.message_id}')" style="float:right; font-size:10px;">
+                        <i class="fas fa-eye"></i> Xem
+                    </button>
+                </div>
+            `;
+            log.scrollTop = log.scrollHeight;
+        });
+        showToast(`📬 ${newEmails.length} thư mới!`, 'success');
+    }
+}
+
+function startMonitor() {
+    const email = currentEmail || document.getElementById('currentEmail')?.textContent;
+    const password = currentPassword || document.getElementById('currentPassword')?.textContent;
+    const interval = parseInt(document.getElementById('monitorInterval').value) || 10;
+
+    if (!email || !password) {
+        showToast('Chưa có email', 'warning');
+        return;
+    }
+
+    if (isMonitoring) {
+        stopMonitor();
+    }
+
+    isMonitoring = true;
+    monitorSeenIds = new Set();
+    document.getElementById('monitorStartBtn').style.display = 'none';
+    document.getElementById('monitorStopBtn').style.display = 'inline-flex';
+    document.getElementById('monitorStatus').className = 'monitor-status active';
+    document.getElementById('monitorStatus').textContent = 'Đang theo dõi...';
+    document.getElementById('monitorLog').innerHTML = `<div style="color: #00b894;">✓ Đang theo dõi ${email} (mỗi ${interval}s)</div>`;
+
+    monitorTick(email, password);
+    monitorTimer = setInterval(() => monitorTick(email, password), interval * 1000);
+}
+
+function stopMonitor() {
+    isMonitoring = false;
+    if (monitorTimer) {
+        clearInterval(monitorTimer);
+        monitorTimer = null;
+    }
+    const startBtn = document.getElementById('monitorStartBtn');
+    const stopBtn = document.getElementById('monitorStopBtn');
+    const status = document.getElementById('monitorStatus');
+    const log = document.getElementById('monitorLog');
+    if (startBtn) startBtn.style.display = 'inline-flex';
+    if (stopBtn) stopBtn.style.display = 'none';
+    if (status) {
+        status.className = 'monitor-status inactive';
+        status.textContent = 'Đã dừng';
+    }
+    if (log) log.innerHTML += `<div style="color: #fdcb6e;">⏹ Đã dừng theo dõi</div>`;
+}
+
+// ─────────────────────────────────────────────
+//  INIT
+// ─────────────────────────────────────────────
+
+document.addEventListener('DOMContentLoaded', () => {
+    // Khôi phục email hiện tại từ lần trước (lưu trong trình duyệt)
+    try {
+        const raw = localStorage.getItem(CURRENT_KEY);
+        if (raw) {
+            const { email, password } = JSON.parse(raw);
+            if (email && password) {
+                updateCurrentEmail(email, password);
+            }
+        }
+    } catch (e) { /* ignore */ }
+});
+
+// Đóng modal khi click outside; dừng monitor khi đóng modal đang theo dõi
+document.getElementById('modal').addEventListener('click', (e) => {
+    if (e.target === e.currentTarget) {
+        if (isMonitoring) stopMonitor();
+        closeModal();
+    }
+});
+
+// Keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        if (isMonitoring) stopMonitor();
+        closeModal();
+    }
+});
+
+</script>
+</body>
+</html>
